@@ -9,6 +9,7 @@ with open("config.yaml", "r") as f:
 data_file = config["data_file"]
 m = config["m"]
 M = config["M"]
+r = config["r"]
 
 def read_data(filename, delimiter=None):
     columns = []

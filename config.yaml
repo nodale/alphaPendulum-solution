@@ -5,8 +5,8 @@ m: 0.0194778
 M: 0.5243
 l : 0.50
 g : 9.81
-Bx : 5
-B0 : 0.02
+Bx : 0.2720279329349872
+B0 : 0.001
 plot:
   color_scatter: "red"
   color_line: "blue"
