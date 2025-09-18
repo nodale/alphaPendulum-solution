@@ -18,8 +18,9 @@ B0 = config["B0"]
 #USER INPUT HERE
 ###############################################################
 
-Q = np.diag([1, 1, 1, 1]) 
-R = np.array([[0.3]])        
+Q = np.diag([1, 1, 200.0, 100.0]) 
+#Q = np.diag([1000, 10, 100000, 10]) 
+R = np.array([[0.1]])        
 
 ################################################################
 
@@ -42,5 +43,5 @@ B = np.array([
 
 K, S, E = lqr(A, B, Q, R)
 
-print(" ".join(f"{k:.2f}" for k in K.flatten()))
+print(" ".join(f"{k:.4f}, " for k in K.flatten()))
 

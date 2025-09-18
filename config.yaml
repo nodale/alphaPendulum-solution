@@ -1,12 +1,11 @@
-# config.yaml
 data_file: "things.txt"
 r: 0.0205
-m: 0.0194778
-M: 0.5243
+m: 0.155
+M: 0.5843
 l : 0.50
-g : 9.81
-Bx : 0.2720279329349872
-B0 : 0.001
+g : -9.81
+Bx : 0.26689194741576183
+B0 : 0.006
 plot:
   color_scatter: "red"
   color_line: "blue"

@@ -30,13 +30,17 @@ ylabel = config["plot"]["ylabel"]
 #####################################################
 
 one = 0
-two = 1
+two = 2
 
-x_max = np.array([1/10.8, 1/120, 1/6.28, 1/0.8])
+x_max = np.array([1/0.8, 1/8, 1/1.54, 1/3.14])
 x_min = -x_max
 
-K_HPC = np.array([[-1.41,  -22.55,  205.18,  7.95]])
-K_HAC = np.array([[-2.42,  -6.98,  29.58,  8.06]])
+K_HPC = np.array([[-3.1623,  -8.3641,  93.3280,  34.9395]])
+K_HAC = np.array([[-19.55,  -7.40,  36.44,  4.62]])
+#K_HAC = np.array([[-20.00,  -14.93,  59.96,  9.59]])
+#K_HPC = np.array([[-44.72,  -27.74,  90.01,  14.74]])
+#K_HAC = np.array([[-282.93,  -76.34,  855.0,  30.0]])
+#K_HPC = np.array([[-282.93,  -97.56,  285,  22.0]])
 
 #NO MORE USER INPUT NEEDED
 #####################################################
@@ -82,13 +86,13 @@ objective = cp.Maximize(cp.log_det(Q))
 prob = cp.Problem(objective, constraints)
 prob.solve(solver=cp.SCS)
 
-Pa = np.linalg.inv(Q.value)
+Pa_HPC = np.linalg.inv(Q.value)
 
-print("HPC P:\n", Pa)
+print("HPC P:\n", Pa_HPC)
 
 P = np.array([
-    [Pa[one][one], Pa[one][two]],
-    [Pa[two][one], Pa[two][two]],
+    [Pa_HPC[one][one], Pa_HPC[one][two]],
+    [Pa_HPC[two][one], Pa_HPC[two][two]],
     ])
 
 def V(x):
@@ -126,13 +130,13 @@ objective = cp.Maximize(cp.log_det(Q))
 prob = cp.Problem(objective, constraints)
 prob.solve(solver=cp.SCS)
 
-Pa = np.linalg.inv(Q.value)
+Pa_HAC = np.linalg.inv(Q.value)
 
-print("HAC P:\n", Pa)
+print("HAC P:\n", Pa_HAC)
 
 P = np.array([
-    [Pa[one][one], Pa[one][two]],
-    [Pa[two][one], Pa[two][two]],
+    [Pa_HAC[one][one], Pa_HAC[one][two]],
+    [Pa_HAC[two][one], Pa_HAC[two][two]],
     ])
 
 def V(x):
@@ -147,6 +151,18 @@ L = np.linalg.cholesky(P)
 #print(circle.shape[0])
 #print(circle.shape[1])
 ellipse_HAC = np.linalg.inv(L) @ circle * np.sqrt(c)
+
+############################################################
+
+data = {
+    "K_HPC": K_HPC.tolist(),
+    "K_HAC": K_HAC.tolist(),
+    "P_HPC": Pa_HPC.tolist(),
+    "P_HAC": Pa_HAC.tolist()
+}
+
+with open("controller.yaml", "w") as f:
+    yaml.dump(data, f)
 
 ############################################################
 
