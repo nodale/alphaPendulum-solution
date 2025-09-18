@@ -1,0 +1,15 @@
+# config.yaml
+data_file: "things.txt"
+r: 0.0205
+m: 0.0194778
+M: 0.5243
+l : 0.50
+g : 9.81
+Bx : 5
+B0 : 0.02
+plot:
+  color_scatter: "red"
+  color_line: "blue"
+  xlabel: "torque"
+  ylabel: "vel"
+

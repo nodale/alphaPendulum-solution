@@ -1,8 +1,14 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-M = 0.5243
-r = 0.0205
+import yaml
+
+with open("config.yaml", "r") as f:
+    config = yaml.safe_load(f)
+
+data_file = config["data_file"]
+m = config["m"]
+M = config["M"]
 
 def read_data(filename, delimiter=None):
     columns = []

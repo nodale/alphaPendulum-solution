@@ -1,22 +1,45 @@
 import numpy as np
+#your machine prolly dont need this
 import matplotlib
 matplotlib.use("Qt5Agg")
+
 import matplotlib.pyplot as plt
 import cvxpy as cp
 from itertools import product
 
-one = 2
-two = 3
+import yaml
+
+with open("config.yaml", "r") as f:
+    config = yaml.safe_load(f)
+
+data_file = config["data_file"]
+r = config["r"]
+m = config["m"]
+M = config["M"]
+l = config["l"]
+g = config["g"]
+Bx = config["Bx"]
+B0 = config["B0"]
+
+scatter_color = config["plot"]["color_scatter"]
+line_color = config["plot"]["color_line"]
+xlabel = config["plot"]["xlabel"]
+ylabel = config["plot"]["ylabel"]
+
+#USER INPUT FROM DOWN HERE ONLY
+#####################################################
+
+one = 0
+two = 1
 
 x_max = np.array([1/10.8, 1/120, 1/6.28, 1/0.8])
 x_min = -x_max
 
-m = 0.0194778
-M = 0.5243
-l = 0.50
-g = 9.81
-Bx = 10
-B0 = 0.06
+K_HPC = np.array([[-1.41,  -22.55,  205.18,  7.95]])
+K_HAC = np.array([[-2.42,  -6.98,  29.58,  8.06]])
+
+#NO MORE USER INPUT NEEDED
+#####################################################
 
 dM = (m + M) * (m*l*l)/3 - 0.25*m*m*l*l
 
@@ -39,7 +62,6 @@ m = B.shape[1]
 
 
 ############################################################
-K_HPC = np.array([[-1.41, -22.55, 205.18, 7.95]])
 
 Acl = A - B @ K_HPC
 
@@ -62,7 +84,7 @@ prob.solve(solver=cp.SCS)
 
 Pa = np.linalg.inv(Q.value)
 
-#print("Lyapunov matrix P:\n", P)
+print("HPC P:\n", Pa)
 
 P = np.array([
     [Pa[one][one], Pa[one][two]],
@@ -76,16 +98,15 @@ theta = np.linspace(0, 2*np.pi, 200)
 circle = np.vstack([np.cos(theta), np.sin(theta)])  # unit circle
 c = 1.0
 L = np.linalg.cholesky(P)
-print(np.linalg.inv(L).shape[0])
-print(np.linalg.inv(L).shape[1])
-print(circle.shape[0])
-print(circle.shape[1])
+#print(np.linalg.inv(L).shape[0])
+#print(np.linalg.inv(L).shape[1])
+#print(circle.shape[0])
+#print(circle.shape[1])
 ellipse_HPC = np.linalg.inv(L) @ circle * np.sqrt(c)
 
 #############################################################
 #K_HAC = np.array([[-10.00, -120, 199.40, 7.72]])
 
-K_HAC = np.array([[-0.04,  -10.22,  8.79,  -1.88]])
 Acl = A - B @ K_HAC
 
 vertices = np.array(list(product(*zip(x_min, x_max)))).T
@@ -107,7 +128,7 @@ prob.solve(solver=cp.SCS)
 
 Pa = np.linalg.inv(Q.value)
 
-#print("Lyapunov matrix P:\n", P)
+print("HAC P:\n", Pa)
 
 P = np.array([
     [Pa[one][one], Pa[one][two]],
@@ -121,10 +142,10 @@ theta = np.linspace(0, 2*np.pi, 200)
 circle = np.vstack([np.cos(theta), np.sin(theta)])  # unit circle
 c = 1.0
 L = np.linalg.cholesky(P)
-print(np.linalg.inv(L).shape[0])
-print(np.linalg.inv(L).shape[1])
-print(circle.shape[0])
-print(circle.shape[1])
+#print(np.linalg.inv(L).shape[0])
+#print(np.linalg.inv(L).shape[1])
+#print(circle.shape[0])
+#print(circle.shape[1])
 ellipse_HAC = np.linalg.inv(L) @ circle * np.sqrt(c)
 
 ############################################################
@@ -138,6 +159,6 @@ plt.xlabel("$x_1$")
 plt.ylabel("$x_2$")
 plt.legend()
 #plt.axis("equal")
-plt.title("Controller Stability Region via Lyapunov Function")
+plt.title("stability region")
 plt.show()
 

@@ -2,13 +2,30 @@ import cvxpy as cp
 import numpy as np
 from itertools import product
 
-m = 0.0194778
-M = 0.5243
-l = 0.50
-g = 9.81
-Bx = 10
-B0 = 0.04
+import yaml
 
+with open("config.yaml", "r") as f:
+    config = yaml.safe_load(f)
+
+data_file = config["data_file"]
+r = config["r"]
+m = config["m"]
+M = config["M"]
+l = config["l"]
+g = config["g"]
+Bx = config["Bx"]
+B0 = config["B0"]
+
+#USER INPUT HERE
+##############################################################
+
+x_max = np.array([1/10.8, 1/120, 1/6.28, 1/0.8])
+x_min = -x_max
+
+u_max = 1/100
+u_min = -u_max
+
+##############################################################
 dM = (m + M) * (m * l * l) / 3 - 0.25 * m * m * l * l
 
 A = np.array([
@@ -28,11 +45,6 @@ B = np.array([
 n = A.shape[0]
 m = B.shape[1]
 
-x_max = np.array([1/10.8, 1/120, 1/6.28, 1/0.8])
-x_min = -x_max
-
-u_max = 1/100
-u_min = -u_max
 
 vertices = np.array(list(product(*zip(x_min, x_max)))).T
 Q = cp.Variable((n, n), symmetric=True)
