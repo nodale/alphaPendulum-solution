@@ -19,10 +19,14 @@ B0 = config["B0"]
 #USER INPUT HERE
 ##############################################################
 
-x_max = np.array([1/4, 1/12, 1/0.2, 1/3.14])
+#x_max = np.array([1/0.4, 1/8, 1/0.3, 1/18])
+#x_max = np.array([1/0.2, 1/8, 1/0.2, 1/12])
+
+#x_max = np.array([1/0.4, 1/8, 1/0.3, 1/48])
+x_max = np.array([1/0.4, 1/8, 1/0.8, 1/180])
 x_min = -x_max
 
-u_max = 1/100
+u_max = 1/100000
 u_min = -u_max
 
 ##############################################################
@@ -79,8 +83,9 @@ prob = cp.Problem(objective, constraints)
 prob.solve(solver=cp.SCS)
 
 K = -Z.value @ np.linalg.inv(Q.value)
+P = np.linalg.inv(Q.value)
 
-#print("Optimal P:\n", P.value)
+print("Optimal P:\n", P)
 #print("Optimal K:\n", K)
 #print("Lyapunov sublevel c:\n", c.value)
 print(" ".join(f"{k:.2f}, " for k in K.flatten()))

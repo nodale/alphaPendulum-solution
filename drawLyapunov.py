@@ -32,15 +32,16 @@ ylabel = config["plot"]["ylabel"]
 one = 0
 two = 2
 
-x_max = np.array([1/0.8, 1/8, 1/1.54, 1/3.14])
+x_max = np.array([1/0.8, 1/8, 1/0.8, 1/24])
 x_min = -x_max
 
-K_HPC = np.array([[-3.1623,  -8.3641,  93.3280,  34.9395]])
-K_HAC = np.array([[-19.55,  -7.40,  36.44,  4.62]])
+#K_HPC = np.array([[-58.37,  -80.74,    319.45,  27.29]])
+K_HAC = np.array([[-64.66,  -112.70,  370.21,  38.54]])
+#K_HAC = np.array([[0.0000,  -0.5338,  323.9807,  33.3924]])
 #K_HAC = np.array([[-20.00,  -14.93,  59.96,  9.59]])
 #K_HPC = np.array([[-44.72,  -27.74,  90.01,  14.74]])
 #K_HAC = np.array([[-282.93,  -76.34,  855.0,  30.0]])
-#K_HPC = np.array([[-282.93,  -97.56,  285,  22.0]])
+K_HPC = np.array([[-282.93,  -97.56,  285,  22.0]])
 
 #NO MORE USER INPUT NEEDED
 #####################################################
@@ -71,11 +72,10 @@ Acl = A - B @ K_HPC
 
 vertices = np.array(list(product(*zip(x_min, x_max)))).T
 Q = cp.Variable((n, n), symmetric=True)
-Z = cp.Variable((m, n))  
 LMI = Q @ Acl.T + Acl @ Q 
 
-constraints = [Q >> 1e-4*np.eye(n),
-               LMI << -1e-6*np.eye(n),
+constraints = [Q >> 1e-6*np.eye(n),
+               LMI << -1e-16*np.eye(n),
                ]
 
 for v in vertices.T:
@@ -88,7 +88,7 @@ prob.solve(solver=cp.SCS)
 
 Pa_HPC = np.linalg.inv(Q.value)
 
-print("HPC P:\n", Pa_HPC)
+print("P_HPC:\n", Pa_HPC)
 
 P = np.array([
     [Pa_HPC[one][one], Pa_HPC[one][two]],
@@ -115,7 +115,6 @@ Acl = A - B @ K_HAC
 
 vertices = np.array(list(product(*zip(x_min, x_max)))).T
 Q = cp.Variable((n, n), symmetric=True)
-Z = cp.Variable((m, n))  
 LMI = Q @ Acl.T + Acl @ Q 
 
 constraints = [Q >> 1e-4*np.eye(n),
@@ -132,7 +131,7 @@ prob.solve(solver=cp.SCS)
 
 Pa_HAC = np.linalg.inv(Q.value)
 
-print("HAC P:\n", Pa_HAC)
+print("P_HAC:\n", Pa_HAC)
 
 P = np.array([
     [Pa_HAC[one][one], Pa_HAC[one][two]],

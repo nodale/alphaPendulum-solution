@@ -3,9 +3,9 @@ r: 0.0205
 m: 0.155
 M: 0.5843
 l : 0.50
-g : -9.81
+g : 9.81
 Bx : 0.26689194741576183
-B0 : 0.006
+B0 : 0.01
 plot:
   color_scatter: "red"
   color_line: "blue"
